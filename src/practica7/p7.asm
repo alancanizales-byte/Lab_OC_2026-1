@@ -4,162 +4,124 @@ section .text
     global _start
 
 _start:
-    ; Mostrar mensaje de entrada
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, msgEntrada
-    mov edx, lenEntrada
-    int 80h
+    ; Mostrar mensaje
+    mov eax, msgEntrada
+    call printString
 
     ; Leer cadena
-    mov eax, 3
-    mov ebx, 0
-    mov ecx, buffer
-    mov edx, 63              ; dejamos espacio para \0
-    int 80h
+    mov eax, cadenaEntrada
+    mov ebx, 64
+    call readString
 
-    ; Reemplazar ENTER por NULL
-    mov esi, buffer
+    ; Convertir ASCII a entero
+    mov eax, cadenaEntrada
+    call atoi
 
-buscar_fin:
-    cmp byte [esi], 10       ; salto de línea
-    je poner_null
-    cmp byte [esi], 0
-    je convertir
-    inc esi
-    jmp buscar_fin
+    ; EAX contiene entero con signo
 
-poner_null:
-    mov byte [esi], 0
+    ; Convertir entero -> ASCII
+    mov ebx, cadenaSalida
+    mov ecx, 64
+    call itoa
 
-convertir:
-    push buffer
-    call ATOI
-    add esp, 4
+    ; Mostrar resultado
+    mov eax, msgSalida
+    call printString
 
-    mov [numero], eax
+    mov eax, cadenaSalida
+    call printString
 
-    push dword 64
-    push salida
-    push dword [numero]
-    call ITOA
-    add esp, 12
+    mov eax, salto
+    call printString
 
-    ; Mostrar mensaje de salida
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, msgSalida
-    mov edx, lenSalida
-    int 80h
-
-    ; Mostrar cadena convertida
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, salida
-    call strlen
-    mov edx, eax
-    mov eax, 4
-    int 80h
-
-    ; salto de línea
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, salto
-    mov edx, 1
-    int 80h
-
-    ; salir
+    ; Salir
     mov eax, 1
     xor ebx, ebx
     int 80h
 
-ATOI:
-    push ebp
-    mov ebp, esp
+atoi:
     push ebx
     push ecx
     push edx
     push esi
 
-    mov esi, [ebp+8]
-    xor eax, eax          ; resultado = 0
-    mov ebx, 1            ; signo = +1
+    mov esi, eax
 
-; Ignorar espacios y tabs
-skip_spaces:
-    mov cl, [esi]
-    cmp cl, ' '
-    je avanzar
-    cmp cl, 9             ; tab
-    je avanzar
-    jmp check_sign
+    xor eax, eax        ; resultado = 0
+    mov ecx, 1          ; signo = positivo
 
-avanzar:
+ignorarEspacios:
+    mov bl, [esi]
+
+    cmp bl, ' '
+    je avanzarEspacio
+
+    cmp bl, 9           
+    je avanzarEspacio
+
+    jmp revisarSigno
+
+avanzarEspacio:
     inc esi
-    jmp skip_spaces
+    jmp ignorarEspacios
 
-; Revisar signo
-check_sign:
-    cmp byte [esi], '-'
-    jne check_plus
-    mov ebx, -1
+revisarSigno:
+    mov bl, [esi]
+
+    cmp bl, '-'
+    jne revisarMas
+
+    mov ecx, -1
     inc esi
-    jmp convertir_digitos
+    jmp convertirDigitos
 
-check_plus:
-    cmp byte [esi], '+'
-    jne convertir_digitos
+revisarMas:
+    cmp bl, '+'
+    jne convertirDigitos
+
     inc esi
 
-; Convertir dígitos
-convertir_digitos:
-    mov cl, [esi]
+convertirDigitos:
+    mov bl, [esi]
 
-    cmp cl, '0'
-    jl fin_atoi
-    cmp cl, '9'
-    jg fin_atoi
+    cmp bl, '0'
+    jl finAtoi
 
-    ; eax = eax * 10
+    cmp bl, '9'
+    jg finAtoi
+
+    sub bl, '0'
+
     imul eax, eax, 10
-
-    ; sumar dígito
-    sub cl, '0'
-    movzx edx, cl
-    add eax, edx
+    add eax, ebx
 
     inc esi
-    jmp convertir_digitos
+    jmp convertirDigitos
 
-fin_atoi:
-    cmp ebx, 1
-    je salir_atoi
+finAtoi:
+    cmp ecx, -1
+    jne salirAtoi
+
     neg eax
 
-salir_atoi:
+salirAtoi:
     pop esi
     pop edx
     pop ecx
     pop ebx
-    mov esp, ebp
-    pop ebp
     ret
 
-ITOA:
-    push ebp
-    mov ebp, esp
+itoa:
     push ebx
     push ecx
     push edx
     push esi
     push edi
 
-    mov eax, [ebp+8]      ; número
-    mov edi, [ebp+12]     ; destino
+    mov esi, ebx        ; inicio buffer
+    mov edi, ebx
 
-    mov esi, edi          ; guardar inicio
-
-    ; verificar signo
+    ; Verificar signo
     cmp eax, 0
     jge positivo
 
@@ -168,79 +130,123 @@ ITOA:
     neg eax
 
 positivo:
-    ; caso especial: número = 0
+    ; Caso especial: 0
     cmp eax, 0
-    jne convertir_itoa
+    jne convertirNumero
 
     mov byte [edi], '0'
     inc edi
+
     mov byte [edi], 0
+
     mov eax, esi
-    jmp fin_itoa
+    jmp salirItoa
 
-; Guardar dígitos invertidos en stack
-convertir_itoa:
-    xor ecx, ecx          ; contador
+convertirNumero:
+    xor ecx, ecx        ; contador
 
-loop_div:
+extraerDigitos:
     xor edx, edx
     mov ebx, 10
-    div ebx               ; eax / 10
 
-    add dl, '0'
+    div ebx
+
+    add edx, '0'
+
     push edx
     inc ecx
 
     cmp eax, 0
-    jne loop_div
+    jne extraerDigitos
 
-; Sacar en orden correcto
-escribir:
-    cmp ecx, 0
-    je terminar
-
+guardarDigitos:
     pop edx
+
     mov [edi], dl
     inc edi
-    dec ecx
-    jmp escribir
 
-terminar:
+    loop guardarDigitos
+
     mov byte [edi], 0
+
     mov eax, esi
 
-fin_itoa:
+salirItoa:
     pop edi
     pop esi
     pop edx
     pop ecx
     pop ebx
-    mov esp, ebp
-    pop ebp
     ret
 
-strlen:
-    xor eax, eax
+printString:
+    push eax
+    push ebx
+    push ecx
+    push edx
 
-strlen_loop:
-    cmp byte [ecx + eax], 0
-    je strlen_fin
-    inc eax
-    jmp strlen_loop
+    mov ecx, eax
+    xor edx, edx
 
-strlen_fin:
+contador:
+    cmp byte [ecx + edx], 0
+    je imprimir
+
+    inc edx
+    jmp contador
+
+imprimir:
+    mov eax, 4
+    mov ebx, 1
+    int 80h
+
+    pop edx
+    pop ecx
+    pop ebx
+    pop eax
+    ret
+
+readString:
+    push ecx
+    push edx
+    push esi
+
+    mov esi, eax
+
+    mov ecx, eax
+    mov edx, ebx
+
+    mov eax, 3
+    mov ebx, 0
+    int 80h
+
+    ; Reemplazar ENTER por NULL
+    xor ecx, ecx
+
+buscarEnter:
+    cmp byte [esi + ecx], 10
+    je ponerNull
+
+    cmp byte [esi + ecx], 0
+    je finRead
+
+    inc ecx
+    jmp buscarEnter
+
+ponerNull:
+    mov byte [esi + ecx], 0
+
+finRead:
+    pop esi
+    pop edx
+    pop ecx
     ret
 
 section .data
-    msgEntrada db "Ingrese una cadena numerica: ", 0
-    lenEntrada equ $ - msgEntrada
-
-    msgSalida db "Numero convertido: ", 0
-    lenSalida equ $ - msgSalida
-
-    salto db 10
+    msgEntrada db "Ingrese una cadena numerica: ",0
+    msgSalida  db 10,"Numero convertido: ",0
+    salto      db 10,0
 
 section .bss
-    buffer      resb 64       ; entrada del usuario
-    salida      resb 64       ; salida para ITOA
-    numero      resd 1
+    cadenaEntrada resb 64
+    cadenaSalida  resb 64
