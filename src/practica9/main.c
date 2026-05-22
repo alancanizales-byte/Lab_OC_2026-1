@@ -26,6 +26,7 @@ int main(){
     for(int i = 0; i < n; i++){
         printf("%d ", arr[i]);
     }
+    printf("\n");
 
     printf("\nMaximo: %d", maximo(arr, n));
     printf("\nMinimo: %d", minimo(arr, n));
