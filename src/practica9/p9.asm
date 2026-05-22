@@ -105,8 +105,13 @@ sumatoria:
 
     xor eax,eax
 
+    dec ecx         
+    js .fin         
+    inc ecx         
+    
     FOR sumar
 
+.fin:              
     pop ecx
     pop esi
 
