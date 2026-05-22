@@ -38,6 +38,7 @@ maximo:
 
     FOR ecx,esi,comparar_max,max
 
+    mov esp, ebp
     pop ebp
     ret
 
@@ -66,6 +67,7 @@ minimo:
 
     FOR ecx,esi,comparar_min,min
 
+    mov esp, ebp
     pop ebp
     ret
 
@@ -92,6 +94,7 @@ sumatoria:
 
     FOR ecx,esi,sumar,suma
 
+    mov esp, ebp
     pop ebp
     ret
 
