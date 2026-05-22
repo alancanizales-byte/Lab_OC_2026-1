@@ -1,3 +1,5 @@
+%include "../../lib/pc_io.inc"
+
 global maximo
 global minimo
 global sumatoria
