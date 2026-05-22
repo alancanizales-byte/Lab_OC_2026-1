@@ -6,19 +6,19 @@ global sumatoria
 
 section .text
 
-%macro FOR 2
-%%inicio:
+%macro FOR 1
+%%ciclo:
     call %1
     add esi,4
-    loop %%inicio
+    loop %%ciclo
 %endmacro
 
 maximo:
     push ebp
     mov ebp,esp
 
-    push esi
     push ebx
+    push esi
 
     mov esi,[ebp+8]
     mov ecx,[ebp+12]
@@ -26,15 +26,15 @@ maximo:
     mov eax,[esi]
 
     dec ecx
-    jz .finmax
+    jz .fin
 
     add esi,4
 
-    FOR comparar_max,max
+    FOR comparar_max
 
-.finmax:
-    pop ebx
+.fin:
     pop esi
+    pop ebx
 
     mov esp,ebp
     pop ebp
@@ -55,8 +55,8 @@ minimo:
     push ebp
     mov ebp,esp
 
-    push esi
     push ebx
+    push esi
 
     mov esi,[ebp+8]
     mov ecx,[ebp+12]
@@ -64,15 +64,15 @@ minimo:
     mov eax,[esi]
 
     dec ecx
-    jz .finmin
+    jz .fin
 
     add esi,4
 
-    FOR comparar_min,min
+    FOR comparar_min
 
-.finmin:
-    pop ebx
+.fin:
     pop esi
+    pop ebx
 
     mov esp,ebp
     pop ebp
@@ -100,7 +100,7 @@ sumatoria:
 
     xor eax,eax
 
-    FOR sumar,suma
+    FOR sumar
 
     pop esi
 

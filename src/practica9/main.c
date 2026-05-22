@@ -21,15 +21,15 @@ int main(){
         scanf("%d", &arr[i]);
     }
 
-    printf("Elementos del arreglo:\n");
+    printf("\nElementos del arreglo:\n");
 
     for(int i = 0; i < n; i++){
         printf("%d ", arr[i]);
     }
 
-    printf("\nMaximo: %d\n", maximo(arr, n));
-    printf("Minimo: %d", minimo(arr, n));
-    printf("Sumatoria: %d", sumatoria(arr, n));
+    printf("\nMaximo: %d", maximo(arr, n));
+    printf("\nMinimo: %d", minimo(arr, n));
+    printf("\nSumatoria: %d", sumatoria(arr, n));
 
     return 0;
 }
