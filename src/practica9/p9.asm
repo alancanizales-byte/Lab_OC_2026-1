@@ -1,5 +1,3 @@
-%include "../../lib/pc_io.inc"
-
 global maximo
 global minimo
 global sumatoria
@@ -19,6 +17,7 @@ maximo:
 
     push ebx
     push esi
+    push ecx
 
     mov esi,[ebp+8]
     mov ecx,[ebp+12]
@@ -33,6 +32,7 @@ maximo:
     FOR comparar_max
 
 .fin:
+    pop ecx
     pop esi
     pop ebx
 
@@ -59,6 +59,7 @@ minimo:
 
     push ebx
     push esi
+    push ecx
 
     mov esi,[ebp+8]
     mov ecx,[ebp+12]
@@ -73,6 +74,7 @@ minimo:
     FOR comparar_min
 
 .fin:
+    pop ecx
     pop esi
     pop ebx
 
