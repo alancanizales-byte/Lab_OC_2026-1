@@ -105,20 +105,14 @@ sumatoria:
 
     xor eax,eax
 
-    dec ecx         
-    js .fin         
-    inc ecx         
-    
-    FOR sumar
+.ciclo:
+    add eax,[esi]
+    add esi,4
+    loop .ciclo
 
-.fin:              
     pop ecx
     pop esi
 
     mov esp,ebp
     pop ebp
-    ret
-
-sumar:
-    add eax,[esi]
     ret
