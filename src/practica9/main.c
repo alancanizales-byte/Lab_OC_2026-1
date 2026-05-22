@@ -12,7 +12,7 @@ int main(){
     scanf("%d", &n);
 
     if(n < 1 || n > 5){
-        printf("Cantidad invalida");
+        printf("Cantidad invalida\n");
         return 1;
     }
 
@@ -26,11 +26,10 @@ int main(){
     for(int i = 0; i < n; i++){
         printf("%d ", arr[i]);
     }
-    printf("\n");
 
-    printf("\nMaximo: %d", maximo(arr, n));
-    printf("\nMinimo: %d", minimo(arr, n));
-    printf("\nSumatoria: %d\n", sumatoria(arr, n));
+    printf("\nMaximo: %d\n", maximo(arr, n));
+    printf("Minimo: %d\n", minimo(arr, n));
+    printf("Sumatoria: %d\n", sumatoria(arr, n));
 
     return 0;
 }
