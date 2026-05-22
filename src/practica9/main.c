@@ -27,9 +27,20 @@ int main(){
         printf("%d ", arr[i]);
     }
 
-    printf("\nMaximo: %d\n", maximo(arr, n));
-    printf("Minimo: %d\n", minimo(arr, n));
-    printf("Sumatoria: %d\n", sumatoria(arr, n));
+    printf("\n");
+    printf("Maximo: %d\n", maximo(arr, n));
 
-    return 0;
+    for(int i = 0; i < n; i++){
+        printf("%d ", arr[i]);
+    }
+
+    printf("\n");
+    printf("Minimo: %d\n", minimo(arr, n));
+
+    for(int i = 0; i < n; i++){
+        printf("%d ", arr[i]);
+    }
+
+    printf("\n");
+    printf("Sumatoria: %d\n", sumatoria(arr, n));
 }
