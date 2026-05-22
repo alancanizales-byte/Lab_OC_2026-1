@@ -29,7 +29,7 @@ int main(){
 
     printf("\nMaximo: %d", maximo(arr, n));
     printf("\nMinimo: %d", minimo(arr, n));
-    printf("\nSumatoria: %d", sumatoria(arr, n));
+    printf("\nSumatoria: %d\n", sumatoria(arr, n));
 
     return 0;
 }

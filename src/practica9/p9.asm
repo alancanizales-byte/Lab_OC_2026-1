@@ -41,6 +41,7 @@ maximo:
     ret
 
 comparar_max:
+    push ebx
     mov ebx,[esi]
 
     cmp ebx,eax
@@ -49,6 +50,7 @@ comparar_max:
     mov eax,ebx
 
 .salir:
+    pop ebx
     ret
 
 minimo:
@@ -79,6 +81,7 @@ minimo:
     ret
 
 comparar_min:
+    push ebx
     mov ebx,[esi]
 
     cmp ebx,eax
@@ -87,6 +90,7 @@ comparar_min:
     mov eax,ebx
 
 .salir:
+    pop ebx
     ret
 
 sumatoria:
@@ -94,6 +98,7 @@ sumatoria:
     mov ebp,esp
 
     push esi
+    push ecx
 
     mov esi,[ebp+8]
     mov ecx,[ebp+12]
@@ -102,6 +107,7 @@ sumatoria:
 
     FOR sumar
 
+    pop ecx
     pop esi
 
     mov esp,ebp
