@@ -27,7 +27,7 @@ int main(){
         printf("%d ", arr[i]);
     }
 
-    printf("\nMaximo: %d\n", maximo(arr, n);
+    printf("\nMaximo: %d\n", maximo(arr, n));
     printf("Minimo: %d", minimo(arr, n));
     printf("Sumatoria: %d", sumatoria(arr, n));
 
