@@ -1,3 +1,5 @@
+%include "../../lib/pc_io.inc"
+
 global maximo
 global minimo
 global sumatoria
@@ -17,7 +19,6 @@ maximo:
 
     push ebx
     push esi
-    push ecx
 
     mov esi,[ebp+8]
     mov ecx,[ebp+12]
@@ -32,7 +33,6 @@ maximo:
     FOR comparar_max
 
 .fin:
-    pop ecx
     pop esi
     pop ebx
 
@@ -41,7 +41,6 @@ maximo:
     ret
 
 comparar_max:
-    push ebx
     mov ebx,[esi]
 
     cmp ebx,eax
@@ -50,7 +49,6 @@ comparar_max:
     mov eax,ebx
 
 .salir:
-    pop ebx
     ret
 
 minimo:
@@ -59,7 +57,6 @@ minimo:
 
     push ebx
     push esi
-    push ecx
 
     mov esi,[ebp+8]
     mov ecx,[ebp+12]
@@ -74,7 +71,6 @@ minimo:
     FOR comparar_min
 
 .fin:
-    pop ecx
     pop esi
     pop ebx
 
@@ -83,7 +79,6 @@ minimo:
     ret
 
 comparar_min:
-    push ebx
     mov ebx,[esi]
 
     cmp ebx,eax
@@ -92,7 +87,6 @@ comparar_min:
     mov eax,ebx
 
 .salir:
-    pop ebx
     ret
 
 sumatoria:
@@ -100,21 +94,20 @@ sumatoria:
     mov ebp,esp
 
     push esi
-    push ecx
 
     mov esi,[ebp+8]
     mov ecx,[ebp+12]
 
     xor eax,eax
 
-.ciclo:
-    add eax,[esi]
-    add esi,4
-    loop .ciclo
+    FOR sumar
 
-    pop ecx
     pop esi
 
     mov esp,ebp
     pop ebp
+    ret
+
+sumar:
+    add eax,[esi]
     ret

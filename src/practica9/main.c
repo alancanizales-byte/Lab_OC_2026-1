@@ -20,27 +20,15 @@ int main(){
         printf("Elemento [%d]: ", i);
         scanf("%d", &arr[i]);
     }
-
-    printf("\nElementos del arreglo:\n");
-
+  
+    printf("\nElementos del arreglo: [ ");
     for(int i = 0; i < n; i++){
         printf("%d ", arr[i]);
     }
-
-    printf("\n");
-    printf("Maximo: %d\n", maximo(arr, n));
-
-    for(int i = 0; i < n; i++){
-        printf("%d ", arr[i]);
-    }
-
-    printf("\n");
-    printf("Minimo: %d\n", minimo(arr, n));
-
-    for(int i = 0; i < n; i++){
-        printf("%d ", arr[i]);
-    }
-
-    printf("\n");
-    printf("Sumatoria: %d\n", sumatoria(arr, n));
+    
+    printf("]\nMaximo: %d", maximo(arr, n));
+    printf("\nMinimo: %d", minimo(arr, n));
+    printf("\nSumatoria: %d\n", sumatoria(arr, n));
+    
+    return 0;
 }
