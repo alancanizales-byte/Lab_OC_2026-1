@@ -4,58 +4,21 @@ global maximo
 global minimo
 global sumatoria
 
-section .data
-
-%macro FOR 4
-    push ecx
-    push edx
-
-    mov ecx,%1
-    mov edx,%2
-
-.%4:
-    call %3
-    add edx,4
-    loop .%4
-
-    pop edx
-    pop ecx
-%endmacro
-
 section .text
+
+%macro FOR 2
+%%inicio:
+    call %1
+    add esi,4
+    loop %%inicio
+%endmacro
 
 maximo:
     push ebp
     mov ebp,esp
 
-    mov esi,[ebp+8]     
-    mov ecx,[ebp+12]    
-
-    mov eax,[esi]       
-
-    dec ecx
-    add esi,4
-
-    FOR ecx,esi,comparar_max,max
-
-    mov esp, ebp
-    pop ebp
-    ret
-
-comparar_max:
-    mov ebx,[edx]
-
-    cmp ebx,eax
-    jle salir_max
-
-    mov eax,ebx
-
-salir_max:
-    ret
-
-minimo:
-    push ebp
-    mov ebp,esp
+    push esi
+    push ebx
 
     mov esi,[ebp+8]
     mov ecx,[ebp+12]
@@ -63,41 +26,88 @@ minimo:
     mov eax,[esi]
 
     dec ecx
+    jz .finmax
+
     add esi,4
 
-    FOR ecx,esi,comparar_min,min
+    FOR comparar_max,max
 
-    mov esp, ebp
+.finmax:
+    pop ebx
+    pop esi
+
+    mov esp,ebp
     pop ebp
     ret
 
-
-comparar_min:
-    mov ebx,[edx]
+comparar_max:
+    mov ebx,[esi]
 
     cmp ebx,eax
-    jge salir_min
+    jle .salir
 
     mov eax,ebx
 
-salir_min:
+.salir:
+    ret
+
+minimo:
+    push ebp
+    mov ebp,esp
+
+    push esi
+    push ebx
+
+    mov esi,[ebp+8]
+    mov ecx,[ebp+12]
+
+    mov eax,[esi]
+
+    dec ecx
+    jz .finmin
+
+    add esi,4
+
+    FOR comparar_min,min
+
+.finmin:
+    pop ebx
+    pop esi
+
+    mov esp,ebp
+    pop ebp
+    ret
+
+comparar_min:
+    mov ebx,[esi]
+
+    cmp ebx,eax
+    jge .salir
+
+    mov eax,ebx
+
+.salir:
     ret
 
 sumatoria:
     push ebp
     mov ebp,esp
 
+    push esi
+
     mov esi,[ebp+8]
     mov ecx,[ebp+12]
 
     xor eax,eax
 
-    FOR ecx,esi,sumar,suma
+    FOR sumar,suma
 
-    mov esp, ebp
+    pop esi
+
+    mov esp,ebp
     pop ebp
     ret
 
 sumar:
-    add eax,[edx]
+    add eax,[esi]
     ret
