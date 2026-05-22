@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <bits/libc-header-start.h>
 
 extern int maximo(int *arr, int len);
 extern int minimo(int *arr, int len);
