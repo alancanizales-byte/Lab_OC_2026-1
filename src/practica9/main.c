@@ -17,7 +17,7 @@ int main(){
     }
 
     for(int i = 0; i < n; i++){
-        printf("Elemento [%d]: ");
+        printf("Elemento [%d]: ", i);
         scanf("%d", &arr[i]);
     }
 
