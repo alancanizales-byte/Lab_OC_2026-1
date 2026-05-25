@@ -1,0 +1,399 @@
+SWITCH, Input
+        Store SELECTOR
+		
+CASE_1, Load SELECTOR
+        SUBT UNO
+        SkipCond 400
+        Jump CASE_2         / FALSO
+        / VERDADERO
+		/ PINTAR HORIZONTAL
+		Load CERO
+		Store OFFSET
+        Jns PINTAR_HORIZONTAL
+        Jump FIN_SWITCH     / BREAK
+
+CASE_2, Load SELECTOR
+        Subt DOS
+        SkipCond 400
+        Jump CASE_3         / FALSO
+        / VERDADERO
+		/ PINTAR VERTICAL
+		Load CERO
+		Store OFFSET
+        JnS PINTAR_VERTICAL
+        Jump FIN_SWITCH
+
+CASE_3, Load SELECTOR
+        Subt TRES
+        SkipCond 400
+        Jump CASE_4         / FALSO
+        / VERDADERO
+		/ PINTAR TABLERO AJEDREZ
+		Load CERO
+		Store OFFSET
+        JnS PINTAR_TABLERO
+        Jump FIN_SWITCH
+
+CASE_4, Load SELECTOR
+        Subt CUATRO
+        SkipCond 400
+        Jump CASE_5         / FALSO
+        / VERDADERO
+		/ PINTAR EN ESPIRAL
+		Load CERO
+		Store OFFSET
+        JnS PINTAR_ESPIRAL
+		Jump FIN_SWITCH
+
+CASE_5, Load SELECTOR
+        Subt CINCO
+        SkipCond 400
+        Jump FIN_SWITCH
+        Halt
+
+FIN_SWITCH, Jump SWITCH
+
+PINTAR_HORIZONTAL, HEX 000
+				   Load CERO
+				   Store FILA
+				   Load CERO
+				   Store FLAG        
+
+SIG_FILA, Load FILA
+          Subt TOTAL_FILAS
+          Skipcond 000
+          Jump FIN_PH
+          Load FLAG
+          Skipcond 400      
+          Jump ES_IMPAR
+
+ES_PAR, Load COLOR_PAR
+        Store COLOR_ACTUAL
+        Jump INIT_COL
+
+ES_IMPAR, Load COLOR_IMPAR
+          Store COLOR_ACTUAL
+
+INIT_COL, Load CERO
+          Store COLUMNA
+
+SIG_COL, Load COLUMNA
+         Subt TOTAL_COLUMNAS
+         Skipcond 000
+         Jump FIN_FILA
+         Load OFFSET
+         Add BASE_DISPLAY
+         Store DIR
+         Load COLOR_ACTUAL
+         StoreI DIR
+         Load OFFSET
+         Add UNO
+         Store OFFSET
+         Load COLUMNA
+         Add UNO
+         Store COLUMNA
+         Jump SIG_COL
+
+FIN_FILA, Load UNO
+          Subt FLAG
+          Store FLAG
+          Load FILA
+          Add UNO
+          Store FILA
+          Jump SIG_FILA
+
+FIN_PH, JumpI PINTAR_HORIZONTAL
+
+PINTAR_VERTICAL, HEX 000
+		         Load CERO
+		         Store COLUMNA
+		         Load CERO
+		         Store FLAG        
+
+SIG_COLUMNA, Load COLUMNA
+	         Subt TOTAL_COLUMNAS
+	         Skipcond 000
+	         Jump FIN_PV
+	         Load FLAG
+	         Skipcond 400
+	         Jump ES_IMPAR_V
+
+ES_PAR_V, Load COLOR_PAR
+          Store COLOR_ACTUAL
+          Jump INIT_FILA
+
+ES_IMPAR_V, Load COLOR_IMPAR
+            Store COLOR_ACTUAL
+
+INIT_FILA, Load CERO
+           Store FILA
+           Load COLUMNA
+           Store OFFSET
+
+SIG_FILA_V, Load FILA
+          Subt TOTAL_FILAS
+          Skipcond 000
+          Jump FIN_COL
+          Load OFFSET
+          Add BASE_DISPLAY
+          Store DIR
+          Load COLOR_ACTUAL
+          StoreI DIR
+          Load OFFSET
+          Add TOTAL_COLUMNAS
+          Store OFFSET
+          Load FILA
+          Add UNO
+          Store FILA
+          Jump SIG_FILA_V
+
+FIN_COL, Load UNO
+         Subt FLAG
+         Store FLAG
+         Load COLUMNA
+         Add UNO
+         Store COLUMNA
+         Jump SIG_COLUMNA
+
+FIN_PV, JumpI PINTAR_VERTICAL
+
+PINTAR_TABLERO, HEX 000
+				Load CERO
+	            Store FILA
+	            Load CERO
+	            Store FLAG_FILA
+	            Load DOS
+	            Store CONT_FILA
+
+SIG_FILA_T, Load FILA
+		    Subt TOTAL_FILAS
+		    Skipcond 000
+		    Jump FIN_TAB
+	        Load CERO
+	        Store COLUMNA
+	        Load FLAG_FILA
+	        Store FLAG
+            Load DOS
+	        Store CONT_COL
+
+SIG_COLUMNA_T, Load COLUMNA
+	           Subt TOTAL_COLUMNAS
+	           Skipcond 000
+	           Jump FIN_FILA_T
+	           Load FLAG
+	           Skipcond 400
+	           Jump ES_IMPAR_T
+
+ES_PAR_T, Load NEGRO
+          Store COLOR_ACTUAL
+          Jump PINTAR
+
+ES_IMPAR_T, Load BLANCO
+            Store COLOR_ACTUAL
+
+PINTAR, Load OFFSET
+        Add BASE_DISPLAY
+        Store DIR
+        Load COLOR_ACTUAL
+        StoreI DIR
+        Load OFFSET
+        Add UNO
+        Store OFFSET
+        Load COLUMNA
+        Add UNO
+        Store COLUMNA
+        Load CONT_COL
+        Subt UNO
+        Store CONT_COL
+        Skipcond 400       
+        Jump SIG_COLUMNA_T
+        Load UNO
+        Subt FLAG
+        Store FLAG
+        Load DOS
+        Store CONT_COL
+        Jump SIG_COLUMNA_T
+
+FIN_FILA_T, Load FILA
+            Add UNO
+            Store FILA
+            Load CONT_FILA
+            Subt UNO
+            Store CONT_FILA
+            Skipcond 400       
+            Jump SIG_FILA_T
+            Load UNO
+            Subt FLAG_FILA
+            Store FLAG_FILA
+            Load DOS
+            Store CONT_FILA
+            Jump SIG_FILA_T
+
+FIN_TAB, JumpI PINTAR_TABLERO
+
+PINTAR_ESPIRAL, HEX 000
+		        Load D_BASE
+		        Store D_PTR
+		        LoadImmi 0
+		        Store CONT         
+		        Store CONT2        
+		        Store SP_T         
+		        Store SP_L         
+		        Load  N15
+		        Store SP_B         
+		        Store SP_R         
+		        Load  M16
+		        Store INC          
+		        Store AUX          
+
+E_SEG,  Load CONT
+        Subt N256
+        SkipCond 0C00      
+        JumpI PINTAR_ESPIRAL     
+        Load AUX
+        Store LIM
+        JnS PINTAR_E      
+        Load CONT
+        Add AUX
+        Store CONT         
+        Load CONT2
+        SkipCond 400
+        Jump E_N0
+        Load SP_L
+        Add UNO
+        Store SP_L
+        LoadImmi 1
+        Store CONT2
+        LoadImmi 1
+        Store INC
+        Load D_PTR
+        Add UNO
+        Store D_PTR
+        Load SP_R
+        Subt SP_L
+        Add UNO
+        Store AUX
+        Jump E_SEG
+
+E_N0, Load CONT2
+      Subt UNO
+      SkipCond 400
+      Jump E_N1
+      Load SP_B
+	  Add N_1
+      Store SP_B
+      LoadImmi 2
+      Store CONT2
+	  Load N16          
+      Store INC
+	  Load D_PTR
+      Add N16
+      Store D_PTR
+      Load SP_B
+	  Subt SP_T
+      Add UNO
+      Store AUX
+      Jump E_SEG
+
+E_N1, Load CONT2
+      Subt DOS
+      SkipCond 400
+      Jump E_N2 
+	  Load SP_R
+      Add N_1
+      Store SP_R
+      LoadImmi 3
+      Store CONT2
+      Load N_1
+      Store INC
+      Load D_PTR
+      Add N_1
+      Store D_PTR
+      Load SP_R
+      Subt SP_L
+      Add UNO
+      Store AUX
+      Jump E_SEG
+		
+ E_N2, Load SP_T
+       Add UNO
+       Store SP_T
+       LoadImmi 0
+       Store CONT2
+       Load M16
+       Store INC
+       Load D_PTR
+       Add M16
+       Store D_PTR
+	   Load SP_B
+       Subt SP_T
+       Add UNO
+       Store AUX
+       Jump E_SEG
+
+PINTAR_E, HEX 000
+		  LoadImmi 0
+		  Store I_P
+		
+P_FOR, Load I_P
+	   Subt LIM
+	   SkipConD 0C00 
+	   Jump P_RETURN
+	   Load COLOR_PAR
+       StoreI D_PTR
+	   Load D_PTR
+	   Add INC
+	   Store D_PTR
+	   Load I_P
+	   Add UNO
+	   Store I_P
+	   Jump P_FOR
+		
+P_RETURN, Load D_PTR
+		  Subt INC
+		  Store D_PTR 
+		  JumpI PINTAR_E
+
+SELECTOR, DEC 0
+CERO, DEC 0
+UNO, DEC 1
+DOS, DEC 2
+TRES, DEC 3
+CUATRO, DEC 4
+CINCO, DEC 5
+N15, DEC 15
+N16, DEC -16
+M16, DEC 16
+N_1, DEC -1
+N256, DEC 256
+FILA, DEC 0
+COLUMNA, DEC 0
+OFFSET, DEC 0
+D_BASE, DEC 3840
+D_FIN, HEX 0FFF
+D_PTR, HEX 0F00
+CONT, DEC 0
+CONT2, DEC 0
+CONT3, DEC 0
+AUX, DEC 0
+SP_T, DEC 0
+SP_B, DEC 0
+SP_L, DEC 0
+SP_R, DEC 0
+DIR, HEX 0
+FLAG, DEC 0
+FLAG_FILA, DEC 0
+CONT_FILA, DEC 0
+CONT_COL, DEC 0
+TOTAL_FILAS, DEC 16
+TOTAL_COLUMNAS, DEC 16
+COLOR, HEX 0000
+I_P, DEC 0
+INC, DEC 0
+LIM, DEC 0
+BASE_DISPLAY, HEX F00   
+COLOR_PAR, HEX FFF  
+COLOR_IMPAR, HEX F000
+COLOR_ACTUAL, HEX 0
+BLANCO, HEX FFFF
+NEGRO, HEX 000

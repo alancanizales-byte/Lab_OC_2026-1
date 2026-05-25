@@ -1,0 +1,123 @@
+SWITCH, Input
+		Store SELECTOR
+
+CASE_1, Load SELECTOR
+		SUBT UNO
+		SkipCond 400
+		Jump CASE_2	/ FALSO
+		/ VERDADERO
+		/ CAPTURAR VALORES
+		JnS CAPTURA_AB
+		Jump FIN_SWITCH / BREAK
+			
+CASE_2, Load SELECTOR
+		Subt DOS
+		SkipCond 400
+		Jump CASE_3 / FALSO
+		/ VERDADERO
+		/ SHIFT IZQUIERDA (MULTIPLICAR POR 2)
+		JnS SHIFT_IZQUIERDA
+		Load SH_A
+		Store SHL_R
+		Output
+		Jump FIN_SWITCH
+
+CASE_3, Load SELECTOR
+		Subt TRES
+		SkipCond 400
+		Jump CASE_4 / FALSO
+		/ VERDADERO
+		/ SHIFT DERECHA (DIVIDIR ENTRE DOS)
+		JnS SHIFT_DERECHA
+		Load SH_A
+		Store SHR_R
+		Output
+		Jump FIN_SWITCH
+
+CASE_4, Load SELECTOR
+		Subt CUATRO
+		SkipCond 400
+		Jump FIN_SWITCH / FALSO
+		/ VERDADERO
+		/ TERMINAR PROGRAMA
+		Halt
+		
+FIN_SWITCH, Jump SWITCH
+
+CAPTURA_AB, HEX 000
+			Input
+			Store SH_A
+			Input
+			Store SH_B
+			JumpI CAPTURA_AB
+
+/ MULTIPLICACION ENTRE 2
+SHIFT_IZQUIERDA, HEX 000
+				 Load CERO
+				 Store I
+
+				 FOR, Load SH_B
+				 	  Subt I
+					  SkipCond 800
+					  Jump RETURN
+					  Load SH_A
+					  Add SH_A
+					  Store SH_A
+					  Load I
+					  Add UNO
+					  Store I
+					  Jump FOR
+					  RETURN, JumpI SHIFT_IZQUIERDA
+				 
+/ DIVISION ENTRE 2
+SHIFT_DERECHA, HEX 000
+			   Load SH_B
+			   Store CTR
+
+			   / VERIFICAR SI CTR = 0, VERDADERO = SALIR, FALSO = INICIAR CICLO
+			   FOR_D, Load CTR
+			   		  SkipCond 400
+					  Jump INICIO
+					  Jump RETURN_D
+
+					  / INICIALIZAR VARIABLE EN CERO
+					  INICIO, Load CERO
+					  Store HALF
+
+					  / VERIFICAR SI SH_A = 0, VERDADERO = GUARDAR RESULTADO DE HALF EN SH_A, FALSO = INICIAR RESTAS
+					  LOOP1, Load SH_A
+					  		 SkipCond 400
+							 Jump LOOP2
+							 Jump GUARDAR
+
+					  / RESTAS SUCESIVAS (-2)
+					  LOOP2, Subt DOS
+							 Store SH_A
+							 Load HALF
+							 Add UNO
+							 Store HALF
+							 Jump LOOP1
+
+					  / GUARDAR EL VALOR DE HALF EN SH_A Y DECREMENTAR CTR
+				      GUARDAR, Load HALF
+					  		   Store SH_A
+							   Load CTR
+							   Subt UNO
+							   Store CTR
+							   Jump FOR_D
+						
+					  RETURN_D, JumpI SHIFT_DERECHA
+
+SELECTOR, DEC 0
+CERO, DEC 0
+UNO, DEC 1
+DOS, DEC 2
+TRES, DEC 3
+CUATRO, DEC 4
+SH_A, DEC 0
+SH_B, DEC 0
+SHL_R, DEC 0
+SHR_R, DEC 0
+I, DEC 0
+CTR, DEC 0
+HALF, DEC 0

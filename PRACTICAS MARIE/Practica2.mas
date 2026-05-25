@@ -1,0 +1,190 @@
+SWITCH, Input
+		Store SELECTOR
+
+CASE_1, Load SELECTOR
+		SUBT UNO
+		SkipCond 400
+		Jump CASE_2	/ FALSO
+		/ VERDADERO
+		/ CONVERTIR MINUSCULAS
+		JnS CONVERTIR_MINUSCULAS
+		Jump FIN_SWITCH / BREAK
+			
+CASE_2, Load SELECTOR
+		Subt DOS
+		SkipCond 400
+		Jump CASE_3 / FALSO
+		/ VERDADERO
+		/ CONVERTIR MAYUSCULAS
+		JnS CONVERTIR_MAYUSCULAS
+		Jump FIN_SWITCH
+
+CASE_3, Load SELECTOR
+		Subt TRES
+		SkipCond 400
+		Jump CASE_4 / FALSO
+		/ VERDADERO
+		/ MOSTRAR CADENA
+		JnS MOSTRAR_CADENA
+		Load CERO
+		Store SALTO_LINEA
+		Load SALTO_LINEA
+		Add DIEZ
+		Store SALTO_LINEA
+		Output
+		Jump FIN_SWITCH
+
+CASE_4, Load SELECTOR
+		Subt CUATRO
+		SkipCond 400
+		Jump FIN_SWITCH / FALSO
+		/ VERDADERO
+		/ TERMINAR PROGRAMA
+		Halt
+		
+FIN_SWITCH, Jump SWITCH
+
+CONVERTIR_MINUSCULAS, HEX 000
+					  / INICIALIZAR CADENA Y CONTADOR
+					  Load CERO
+					  Store CTR
+					  Load INICIO_CADENA
+					  Store PTR
+
+					  / CONTINUAR CICLO HASTA ENCONTRAR CARACTER VACIO
+					  LOOP_MIN, LoadI PTR
+					  			SkipCond 800
+								Jump RET_MIN
+
+								/ VERIFICAR SI EL CARACTER ES MAYUSCULA (>= 65)
+								Subt SESENTA_Y_CINCO
+								SkipCond 000
+								Jump ES_MAYUS
+								Jump SIG_CAR
+
+								/ VERIFICAR SI EL CARACTER PERTENECE AL RANGO A-Z
+								ES_MAYUS, LoadI PTR
+										  Subt NOVENTA_Y_UNO
+										  SkipCond 800
+										  Jump CONV_MIN
+										  Jump SIG_CAR
+
+								/ CONVERTIR A MINUSCULA
+								CONV_MIN, LoadI PTR
+										  Add TREINTA_Y_DOS
+										  StoreI PTR
+
+								/ CONTINUA SI EL CARACTER ES MINUSCULA
+								SIG_CAR, Load PTR
+										 Add UNO
+										 Store PTR
+										 Load CTR
+										 Add UNO
+										 Store CTR
+										 Jump LOOP_MIN
+
+								RET_MIN, JumpI CONVERTIR_MINUSCULAS
+					  					 
+CONVERTIR_MAYUSCULAS, HEX 000
+					  / INICIALIZAR CADENA Y CONTADOR
+					  Load CERO
+					  Store CTR
+					  Load INICIO_CADENA
+					  Store PTR
+
+					  / CONTINUAR CICLO HASTA ENCONTRAR CARACTER VACIO
+					  LOOP_MAY, LoadI PTR
+					  			SkipCond 800
+								Jump RET_MAY
+
+								/ VERIFICAR SI EL CARACTER ES MINUSCULA (>= 97)
+								Subt NOVENTA_Y_SIETE
+								SkipCond 000
+								Jump ES_MIN
+								Jump SIG_CAR_M
+
+								/ VERIFICAR SI EL CARACTER PERTENECE AL RANGO a-z
+								ES_MIN, LoadI PTR
+										Subt CIENTO_VEINTITRES
+										SkipCond 800
+										Jump CONV_MAYUS
+									    Jump SIG_CAR_M
+
+								/ CONVERTIR A MAYUSCULA
+								CONV_MAYUS, LoadI PTR
+											Subt TREINTA_Y_DOS
+											StoreI PTR
+
+								/ CONTINUAR SI EL CARACTER ES MAYUSCULA
+								SIG_CAR_M, Load PTR
+										 Add UNO
+										 Store PTR
+										 Load CTR
+										 Add UNO
+										 Store CTR
+										 Jump LOOP_MAY
+
+								RET_MAY, JumpI CONVERTIR_MAYUSCULAS
+							
+MOSTRAR_CADENA, HEX 000
+				Load INICIO_CADENA
+				Store PTR
+				
+			    LOOP_MOS, LoadI PTR
+					      SkipCond 800
+						  Jump RET_OUT
+						  Output
+						  Load PTR
+						  Add UNO
+						  Store PTR
+						  Jump LOOP_MOS
+
+				RET_OUT, JumpI MOSTRAR_CADENA
+				
+SELECTOR, DEC 0
+CTR, DEC 0
+CERO, DEC 0
+UNO, DEC 1
+DOS, DEC 2
+TRES, DEC 3
+CUATRO, DEC 4
+SALTO_LINEA, DEC 0
+DIEZ, DEC 10
+TREINTA_Y_DOS, DEC 32
+SESENTA_Y_CINCO, DEC 65
+NOVENTA_Y_UNO, DEC 91
+NOVENTA_Y_SIETE, DEC 97
+CIENTO_VEINTITRES, DEC 123
+
+PTR, HEX 000
+INICIO_CADENA, ADR CADENA	
+/CADENA = "OrGaniZaciOn de Computadoras"	
+CADENA, DEC 79	
+DEC 114  	
+DEC 71	 	
+DEC 97			
+DEC 110	
+DEC 105
+DEC 90	
+DEC 97	
+DEC 99	
+DEC 105	
+DEC 79	
+DEC 110	
+DEC 32
+DEC 100	
+DEC 101	
+DEC 32	
+DEC 67	
+DEC 111
+DEC 109
+DEC 112	
+DEC 117	
+DEC 116	
+DEC 97	
+DEC 100	
+DEC 111	
+DEC 114	
+DEC 97	
+DEC 115	
+DEC 00	

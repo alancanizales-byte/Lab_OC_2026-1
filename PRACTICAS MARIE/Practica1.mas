@@ -1,0 +1,128 @@
+SWITCH, Input
+		Store SELECTOR
+
+CASE_1, SUBT UNO
+		SkipCond 400
+		Jump CASE_2	/ FALSO
+		/ VERDADERO
+		/ CAPTURAR VALORES
+		JnS CAPTURA_XY
+		Jump FIN_SWITCH / BREAK
+			
+CASE_2, Load SELECTOR
+		Subt DOS
+		SkipCond 400
+		Jump CASE_3 / FALSO
+		/ VERDADERO
+		/ MULTIPLICACION OPTIMIZADA
+		JnS MULTIPLICACION_OPT
+		Load M
+		Output
+		Jump FIN_SWITCH
+
+CASE_3, Load SELECTOR
+		Subt TRES
+		SkipCond 400
+		Jump CASE_4 / FALSO
+		/ VERDADERO
+		/ POTENCIA
+		JnS POTENCIA_XY
+		Load R
+		Output
+		Jump FIN_SWITCH
+
+CASE_4, Load SELECTOR
+		Subt CUATRO
+		SkipCond 400
+		Jump FIN_SWITCH / FALSO
+		/ VERDADERO
+		/ TERMINAR PROGRAMA
+		Halt
+		
+FIN_SWITCH, Jump SWITCH
+
+CAPTURA_XY, HEX 000
+			Input
+			Store X
+			Input
+			Store Y
+			JumpI CAPTURA_XY
+
+MULTIPLICACION_OPT, HEX 000
+					Load X
+					Subt Y
+					SkipCond 000
+					Jump X_MAYOR
+
+					Load X
+					Store CONT_M
+					Load Y
+					Store TEMP
+					Jump MULTIPLICA_XY
+
+					X_MAYOR, Load Y
+		 			Store CONT_M
+		 			Load X
+		 			Store TEMP
+
+					MULTIPLICA_XY, LOAD CERO
+								   STORE M / M = 0
+							 	   STORE I / I = 0
+								   FOR, LOAD CONT_M
+						 				SUBT I
+						 				SKIPCOND 800 / I < Y
+						 				JUMP RETURN	 /FALSE
+										/ TRUE
+										/ M = M + X;
+										LOAD M
+										ADD TEMP
+										STORE M
+										/ I++;
+										LOAD I
+										ADD UNO
+										STORE I
+										JUMP FOR
+										RETURN, JumpI MULTIPLICACION_OPT
+			   
+POTENCIA_XY, HEX 000
+			 Load X
+			 Store BASE
+			 Load UNO 
+			 Store R 
+			 Load Y 
+			 Store CONT_P 
+			 
+			 POT_CICLO, Load CONT_P 
+			 			SkipCond 400 
+						Jump POT_CALC 
+						Jump POT_FIN 
+						
+			 POT_CALC, Load R 
+			 		   Store X 
+					   Load BASE
+					   Store Y
+					   JnS MULTIPLICACION_OPT 
+					   Load M 
+					   Store R 
+					   Load CONT_P 
+					   Subt UNO 
+					   Store CONT_P 
+					   Jump POT_CICLO 
+					   
+			 POT_FIN, JumpI POTENCIA_XY
+										  
+X, DEC 0
+Y, DEC 0
+CONT_M, DEC 0
+CONT_P, DEC 0
+TEMP, DEC 0
+BASE, DEC 0
+I, DEC 0
+M, DEC 0
+R, DEC 0
+SELECTOR, DEC 0
+CERO, DEC 0
+UNO, DEC 1
+DOS, DEC 2
+TRES, DEC 3
+CUATRO, DEC 4
